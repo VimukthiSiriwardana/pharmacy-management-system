@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Orders By Medicine</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin: 2rem auto;
+            max-width: 1400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: translate(50%, -50%);
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+        }
+
+        .content-section {
+            padding: 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--light-bg);
+            border-radius: var(--border-radius);
+            border: 2px dashed #e2e8f0;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .orders-table {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: none;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: none;
+            padding: 1.25rem 1rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--secondary-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table tbody tr {
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1rem;
+            vertical-align: middle;
+            border-top: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .customer-info {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .quantity-badge {
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .contact-info {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+
+        .date-info {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            border: 2px solid;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border-color: #f59e0b;
+        }
+
+        .status-paid {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border-color: var(--success-color);
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border-color: var(--danger-color);
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .table-responsive {
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                border-radius: 8px;
+            }
+
+            .header-section {
+                padding: 1.5rem;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .content-section {
+                padding: 1rem;
+            }
+
+            .table tbody td,
+            .table thead th {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="header-section">
+        <h2 class="header-title">
+            <div class="header-icon">
+                <i class="fas fa-pills"></i>
+            </div>
+            Orders for Medicine
+        </h2>
+    </div>
+
+    <div class="content-section">
+        <div th:if="${orders.empty}" class="empty-state">
+            <i class="fas fa-prescription-bottle-alt"></i>
+            <h4>No Orders Found</h4>
+            <p>There are currently no orders for this medicine.</p>
+        </div>
+
+        <div class="table-responsive" th:unless="${orders.empty}">
+            <table class="table orders-table">
+                <thead>
+                <tr>
+                    <th><i class="fas fa-user me-2"></i>Customer</th>
+                    <th><i class="fas fa-sort-numeric-up me-2"></i>Quantity</th>
+                    <th><i class="fas fa-map-marker-alt me-2"></i>Address</th>
+                    <th><i class="fas fa-phone me-2"></i>Phone</th>
+                    <th><i class="fas fa-calendar me-2"></i>Order Date</th>
+                    <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                    <th><i class="fas fa-cogs me-2"></i>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td>
+                        <div class="customer-info" th:text="${order.customer.firstName + ' ' + order.customer.lastName}">John Doe</div>
+                    </td>
+                    <td>
+                        <span class="quantity-badge" th:text="${#lists.sum(order.items, 'quantity')}">2</span>
+                    </td>
+                    <td>
+                        <div class="contact-info" th:text="${order.customer.address} ?: '—'">123 Main St</div>
+                    </td>
+                    <td>
+                        <div class="contact-info" th:text="${order.customer.phoneNumber} ?: '—'">0771234567</div>
+                    </td>
+                    <td>
+                        <div class="date-info" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}">27 Sep 2025</div>
+                    </td>
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${'status-' + #strings.toLowerCase(order.status)}">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                            <span th:text="${order.status}">PENDING</span>
+                        </span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/orders/invoice/' + ${order.id}}"
+                           class="action-btn">
+                            <i class="fas fa-file-invoice"></i>
+                            Invoice
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

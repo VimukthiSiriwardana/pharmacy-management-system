@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .feedback-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feedback-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 70px -12px rgba(0, 0, 0, 0.35);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.75rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header i {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-right: 0.75rem;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .medicine-info {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicine-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        .medicine-info h5 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .medicine-info p {
+            color: #64748b;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label i {
+            margin-right: 0.5rem;
+            color: #6366f1;
+        }
+
+        .rating {
+            direction: rtl;
+            text-align: center;
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .rating:hover {
+            border-color: #c7d2fe;
+            background: #fafbff;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 2.5rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+            display: inline-block;
+            transform: scale(1);
+        }
+
+        .rating label:hover {
+            color: #fbbf24;
+            transform: scale(1.2);
+            text-shadow: 0 4px 8px rgba(251, 191, 36, 0.3);
+        }
+
+        .rating label:hover ~ label {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .rating input:checked ~ label {
+            color: #f59e0b;
+            text-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -6px rgba(16, 185, 129, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .text-danger {
+            color: #ef4444 !important;
+            font-weight: 600;
+        }
+
+        .mb-3 {
+            margin-bottom: 2rem !important;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 2rem;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .rating label {
+                font-size: 2rem;
+                margin: 0 0.1rem;
+            }
+
+            .card-header h4 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .medicine-info {
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .form-group {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 feedback-container">
+            <div class="card shadow feedback-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-star"></i>Submit Feedback</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 medicine-info">
+                        <h5>Medicine: <span th:text="${medicine.name}">Paracetamol</span></h5>
+                        <p th:text="${medicine.description}">Pain relief medicine</p>
+                    </div>
+
+                    <form th:action="@{/feedback/add}" method="post">
+                        <input type="hidden" name="medicineId" th:value="${medicine.id}"/>
+
+                        <div class="mb-3 form-group">
+                            <label class="form-label">
+                                <i class="fas fa-star"></i>
+                                Rating <span class="text-danger">*</span>
+                            </label>
+                            <div class="rating">
+                                <input type="radio" id="star5" name="rating" value="5" required/>
+                                <label for="star5" title="5 stars">★</label>
+                                <input type="radio" id="star4" name="rating" value="4" required/>
+                                <label for="star4" title="4 stars">★</label>
+                                <input type="radio" id="star3" name="rating" value="3" required/>
+                                <label for="star3" title="3 stars">★</label>
+                                <input type="radio" id="star2" name="rating" value="2" required/>
+                                <label for="star2" title="2 stars">★</label>
+                                <input type="radio" id="star1" name="rating" value="1" required/>
+                                <label for="star1" title="1 star">★</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-group">
+                            <label class="form-label">
+                                <i class="fas fa-comment-alt"></i>
+                                Your Review
+                            </label>
+                            <textarea name="comment" class="form-control" rows="4"
+                                      placeholder="Share your experience with this medicine..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn submit-btn">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Feedback
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

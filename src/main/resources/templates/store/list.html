@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Medicine Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        /* Navigation Header */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .nav-btn-secondary {
+            color: #6b7280;
+            border-color: #e5e7eb;
+            background: white;
+        }
+
+        .nav-btn-secondary:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        /* Header Section */
+        .header-container {
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .header-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            color: white;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff, #f1f5f9);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Search Section */
+        .search-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05));
+            pointer-events: none;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 4rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1), 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .search-results-info {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th {
+            padding: 1.5rem 2rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        th:hover::after {
+            opacity: 1;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05));
+            transform: translateX(5px);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 1.5rem 2rem;
+            vertical-align: middle;
+            border: none;
+            font-size: 0.9375rem;
+        }
+
+        td:first-child {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        td:nth-child(2) {
+            color: #6b7280;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        td:nth-child(3) {
+            font-weight: 800;
+            color: #059669;
+            font-size: 1.25rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            min-width: 200px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-outline-info {
+            color: #0ea5e9;
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .btn-outline-info:hover {
+            background: #0ea5e9;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-outline-success {
+            color: #059669;
+            border-color: #059669;
+            background: rgba(5, 150, 105, 0.05);
+        }
+
+        .btn-outline-success:hover {
+            background: #059669;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .no-results-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            opacity: 0.5;
+            color: #9ca3af;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .no-results p {
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .table-container, .search-container {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .search-container {
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+
+        tbody tr {
+            animation: slideIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.15s; }
+        tbody tr:nth-child(3) { animation-delay: 0.2s; }
+        tbody tr:nth-child(4) { animation-delay: 0.25s; }
+        tbody tr:nth-child(5) { animation-delay: 0.3s; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container, .nav-container {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 3rem 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-actions {
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.8125rem;
+            }
+
+            th, td {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                min-width: 150px;
+            }
+
+            .btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.8125rem;
+            }
+
+            td:nth-child(2) {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .table-container, .search-container {
+                border-radius: 16px;
+                margin: 0 0 2rem 0;
+            }
+
+            .search-container {
+                padding: 1.5rem;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+
+            .action-buttons {
+                min-width: 120px;
+            }
+        }
+
+        /* Floating Action Button for Mobile */
+        @media (max-width: 768px) {
+            .floating-dashboard {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+            }
+
+            .floating-dashboard .nav-btn-primary {
+                border-radius: 50px;
+                padding: 1rem 1.5rem;
+                box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="logo">
+            <i class="fas fa-capsules"></i>
+            MediStore Pro
+        </a>
+        <div class="nav-actions">
+            <a href="http://localhost:8080" class="nav-btn nav-btn-secondary">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a th:href="@{/auth/logout}" class="nav-btn nav-btn-primary">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<div class="header-container">
+    <div class="container">
+        <div class="header-content">
+            <div class="header-badge">
+                <i class="fas fa-shield-alt"></i>
+                Trusted Healthcare Partner
+            </div>
+            <h1>Welcome to Our Medicine Store</h1>
+            <p class="subtitle">Discover premium quality medicines with professional care and expert guidance for your health and wellness needs.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Search Section -->
+    <div class="search-container">
+        <div class="search-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+                    type="text"
+                    id="medicineSearch"
+                    class="search-input"
+                    placeholder="Search medicines by name or description..."
+                    oninput="filterMedicines()"
+            >
+        </div>
+        <div id="searchResults" class="search-results-info"></div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th><i class="fas fa-pills"></i> Medicine Name</th>
+                <th><i class="fas fa-info-circle"></i> Description</th>
+                <th><i class="fas fa-tag"></i> Price (Rs.)</th>
+                <th><i class="fas fa-cogs"></i> Actions</th>
+            </tr>
+            </thead>
+            <tbody id="medicineTableBody">
+            <tr th:each="medicine : ${medicines}">
+                <td th:text="${medicine.name}"></td>
+                <td th:text="${medicine.description}"></td>
+                <td th:text="${medicine.price}"></td>
+                <td>
+                    <div class="action-buttons">
+                        <form th:action="@{'/orders/buy/' + ${medicine.id}}" method="post" style="display:inline; width: 100%;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%; border: none;">
+                                <i class="fas fa-shopping-cart"></i>
+                                Buy Now
+                            </button>
+                        </form>
+
+                        <a th:href="@{'/feedback/medicine/' + ${medicine.id}}" class="btn btn-outline-info">
+                            <i class="fas fa-comments"></i>
+                            View Reviews
+                        </a>
+
+                        <a th:href="@{'/feedback/add/' + ${medicine.id}}" class="btn btn-outline-success">
+                            <i class="fas fa-plus"></i>
+                            Add Review
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="fas fa-search no-results-icon"></i>
+            <h3>No medicines found</h3>
+            <p>Try adjusting your search terms or browse all available medicines.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Dashboard Button for Mobile -->
+<div class="floating-dashboard d-md-none">
+    <a href="http://localhost:8080" class="nav-btn nav-btn-primary">
+        <i class="fas fa-tachometer-alt"></i>
+    </a>
+</div>
+
+<script>
+    let allRows = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.getElementById('medicineTableBody');
+        allRows = Array.from(tbody.querySelectorAll('tr'));
+        updateSearchResults(allRows.length, allRows.length);
+    });
+
+    function filterMedicines() {
+        const searchTerm = document.getElementById('medicineSearch').value.toLowerCase().trim();
+        const tbody = document.getElementById('medicineTableBody');
+        const noResults = document.getElementById('noResults');
+
+        if (searchTerm === '') {
+            allRows.forEach((row, index) => {
+                row.style.display = '';
+                row.style.animation = `slideIn 0.6s ease-out ${index * 0.05}s both`;
+            });
+            noResults.style.display = 'none';
+            updateSearchResults(allRows.length, allRows.length);
+            return;
+        }
+
+        let visibleCount = 0;
+
+        allRows.forEach((row, index) => {
+            const name = row.cells[0].textContent.toLowerCase();
+            const description = row.cells[1].textContent.toLowerCase();
+
+            if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                row.style.display = '';
+                row.style.animation = `slideIn 0.6s ease-out ${visibleCount * 0.1}s both`;
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            noResults.style.animation = 'fadeInUp 0.6s ease-out';
+        } else {
+            noResults.style.display = 'none';
+        }
+
+        updateSearchResults(visibleCount, allRows.length);
+    }
+
+    function updateSearchResults(visible, total) {
+        const resultsDiv = document.getElementById('searchResults');
+        const searchTerm = document.getElementById('medicineSearch').value.trim();
+
+        if (searchTerm === '') {
+            resultsDiv.innerHTML = `<i class="fas fa-pills"></i> Showing all ${total} medicines`;
+        } else if (visible === 0) {
+            resultsDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> No medicines found for "${searchTerm}"`;
+        } else if (visible === 1) {
+            resultsDiv.innerHTML = `<i class="fas fa-check-circle"></i> Found 1 medicine matching "${searchTerm}"`;
+        } else {
+            resultsDiv.innerHTML = `<i class="fas fa-check-circle"></i> Found ${visible} medicines matching "${searchTerm}"`;
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault();
+            document.getElementById('medicineSearch').focus();
+        }
+
+        if (e.key === 'Escape') {
+            const searchInput = document.getElementById('medicineSearch');
+            if (searchInput === document.activeElement) {
+                searchInput.value = '';
+                filterMedicines();
+                searchInput.blur();
+            }
+        }
+    });
+
+    // Add smooth scrolling for better UX
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

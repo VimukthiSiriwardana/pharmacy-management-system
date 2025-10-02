@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaCare Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2d5aa0;
+            --secondary: #0ea5e9;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gradient-primary: linear-gradient(135deg, #1a365d 0%, #2563eb 50%, #0ea5e9 100%);
+            --gradient-secondary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gradient-secondary);
+            color: var(--dark);
+            line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            background: var(--gradient-primary) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
+            padding: 1rem 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--white) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+            color: var(--accent) !important;
+        }
+
+        .navbar-brand i {
+            font-size: 2rem;
+            background: linear-gradient(45deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .navbar-nav {
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem !important;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .nav-link:hover {
+            color: var(--white) !important;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Active state for nav links */
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white) !important;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Badge Enhancement */
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-badge:hover::before {
+            opacity: 1;
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: var(--gradient-primary) !important;
+            color: var(--white);
+            position: relative;
+            margin-top: auto;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 1;
+        }
+
+        footer .container {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 0;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        footer small {
+            opacity: 0.8;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        footer .fa-heart {
+            color: #ef4444 !important;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Container Enhancements */
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Additional responsive improvements */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .navbar-brand i {
+                font-size: 1.5rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.9rem;
+            }
+
+            .navbar-nav {
+                gap: 0.25rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            footer p {
+                font-size: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+
+            .nav-link {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus styles for accessibility */
+        .nav-link:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
+        }
+
+        /* Loading animation for page transitions */
+        .page-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover effects for better interactivity */
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-toggler:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+<!-- Enhanced Navbar -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-heartbeat"></i>
+            <span>PharmaCare</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav ms-auto">
+                <!-- Home: Always goes to public home -->
+                <a class="nav-link" th:href="@{/}">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+
+                <!-- Medicines: Role-based destination -->
+                <a class="nav-link" th:href="@{/store}" th:if="${#authorization.expression('hasAuthority(''ROLE_CUSTOMER'')')}">
+                    <i class="fas fa-pills"></i>
+                    <span>Medicines</span>
+                </a>
+                <a class="nav-link" th:href="@{/medicines}" th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'',''ROLE_PHARMACIST'',''ROLE_MANAGER'')')}">
+                    <i class="fas fa-pills"></i>
+                    <span>Medicines</span>
+                </a>
+
+                <!-- Inventory link added -->
+                <a class="nav-link" th:href="@{/inventory}"
+                   th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'',''ROLE_PHARMACIST'',''ROLE_MANAGER'')')}">
+                    <i class="fas fa-warehouse me-1"></i> Inventory
+                </a>
+
+                <!-- Dashboard: Only for non-customers -->
+                <a class="nav-link" th:href="@{/dashboard}" th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'',''ROLE_PHARMACIST'',''ROLE_MANAGER'')')}">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Pending Orders: For staff -->
+                <a class="nav-link" th:href="@{/orders/pending}" th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'',''ROLE_PHARMACIST'',''ROLE_MANAGER'')')}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pending Orders</span>
+                </a>
+
+                <!-- Pending Prescriptions: Only for pharmacists/admins -->
+                <a class="nav-link" th:href="@{/prescriptions/pending}" th:if="${#authorization.expression('hasAnyAuthority(''ROLE_PHARMACIST'',''ROLE_ADMIN'',''ROLE_MANAGER'')')}">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Pending Prescriptions</span>
+                </a>
+
+                <!-- My Profile: For all logged-in users -->
+                <a class="nav-link" th:href="@{/profile}" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+                <!-- Logout: For logged-in users -->
+                <a class="nav-link" th:href="@{/auth/logout}" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+
+                <!-- Login/Register: Only for guests -->
+                <a class="nav-link" th:href="@{/auth/login}" th:unless="${#authorization.expression('isAuthenticated()')}">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+                <a class="nav-link" th:href="@{/auth/register}" th:unless="${#authorization.expression('isAuthenticated()')}">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Enhanced Footer -->
+<footer th:fragment="footer" class="text-center mt-5">
+    <div class="container">
+        <p class="mb-3">
+            <i class="fas fa-heart"></i>
+            <span>Web-Based Pharmacy Management System</span>
+            <i class="fas fa-heart"></i>
+        </p>
+        <small>© 2025 PharmaCare | All rights reserved.</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Enhanced page transition effect
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.add('page-transition');
+
+        // Add smooth scrolling to all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add active class to current page nav link
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 100) {
+            navbar.style.backdropFilter = 'blur(20px)';
+            navbar.style.background = 'rgba(26, 54, 93, 0.95)';
+        } else {
+            navbar.style.backdropFilter = 'blur(10px)';
+            navbar.style.background = '';
+        }
+    });
+</script>
+</body>
+</html>

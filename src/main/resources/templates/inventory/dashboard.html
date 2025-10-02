@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --dark-color: #f8fafc;
+            --light-bg: #1f2937;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+            --text-muted: #94a3b8;
+            --border-color: #374151;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #111827;
+            color: var(--dark-color);
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: var(--dark-color);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 1.5rem 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .dashboard-title { font-weight: 700; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .dashboard-subtitle { font-weight: 300; opacity: 0.9; font-size: 1.1rem; }
+
+        .metric-card,
+        .alert-section,
+        .modern-table,
+        .no-alerts {
+            background: var(--light-bg);
+            color: var(--dark-color);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover,
+        .alert-section:hover,
+        .modern-table:hover,
+        .no-alerts:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .metric-card .card-body { padding: 2rem; position: relative; }
+        .metric-icon {
+            position: absolute; top: 1.5rem; right: 1.5rem; width: 3rem; height: 3rem;
+            border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; opacity: 0.8;
+        }
+        .metric-value { font-size: 3rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; color: #f8fafc; }
+        .metric-label { font-weight: 500; font-size: 0.95rem; color: #cbd5e1; margin-bottom: 0; }
+
+        .metric-primary .metric-icon { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .metric-warning .metric-icon { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .metric-info .metric-icon { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+        .metric-danger .metric-icon { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .alert-header { padding: 1.5rem 2rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid #4b5563; }
+        .alert-header h4 { margin: 0; font-weight: 600; font-size: 1.25rem; color: #f8fafc; }
+        .alert-header p { margin: 0; color: #e2e8f0; font-size: 0.95rem; }
+
+        .alert-low .alert-header { background: #92400e; color: var(--dark-color); }
+        .alert-expiring .alert-header { background: #92400e; color: var(--dark-color); }
+        .alert-expired .alert-header { background: #991b1b; color: var(--dark-color); }
+
+        .alert-content { padding: 1.5rem 2rem; }
+
+        .modern-table { background: #111827; border-radius: 0.75rem; overflow: hidden; border: 1px solid #374151; }
+        .modern-table table { margin: 0; }
+        .modern-table thead th {
+            background: #1f2937;
+            border: none;
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+        }
+        .modern-table tbody td {
+            border-top: 1px solid #374151;
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            color: #e0e7ff;
+            font-size: 1rem;
+            font-weight: 500;
+            background: #111827;
+        }
+        .modern-table tbody tr:hover { background: #1f2937; }
+        .modern-table tbody td strong { color: #a5f3fc; font-weight: 700; font-size: 1.05rem; }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1e3a8a;
+            color: #bfdbfe;
+            border: 1px solid #3b82f6;
+        }
+
+        .status-badge i {
+            font-size: 1rem;
+            color: #93c5fd;
+        }
+
+        .btn-modern {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            border: 1px solid;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-primary.btn-modern {
+            background: #1e40af;
+            border-color: #3b82f6;
+            color: #dbeafe;
+            font-size: 0.9rem;
+        }
+        .btn-outline-primary.btn-modern:hover {
+            background: #2563eb;
+            border-color: #60a5fa;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.btn-modern {
+            background: #92400e;
+            border-color: #f59e0b;
+            color: #fef3c7;
+            font-size: 0.9rem;
+        }
+        .btn-outline-warning.btn-modern:hover {
+            background: #d97706;
+            border-color: #fbbf24;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(217, 119, 6, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger.btn-modern {
+            background: #991b1b;
+            border-color: #ef4444;
+            color: #fee2e2;
+            font-size: 0.9rem;
+        }
+        .btn-outline-danger.btn-modern:hover {
+            background: #dc2626;
+            border-color: #f87171;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .no-alerts { text-align: center; padding: 4rem 2rem; }
+        .no-alerts-icon { color: #10b981; font-size: 4rem; margin-bottom: 1.5rem; }
+        .no-alerts h4 { color: #f8fafc; font-weight: 600; margin-bottom: 1rem; }
+        .no-alerts p { color: #cbd5e1; font-size: 1.1rem; margin: 0; }
+
+        @media (max-width: 768px) {
+            .dashboard-title { font-size: 2rem; }
+            .metric-card .card-body { padding: 1.5rem; }
+            .metric-value { font-size: 2.5rem; }
+            .alert-header, .alert-content { padding: 1rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="dashboard-header">
+    <div class="container">
+        <h1 class="dashboard-title"><i class="fas fa-warehouse me-3"></i>Inventory Control</h1>
+        <p class="dashboard-subtitle">Monitor stock levels, expiry dates, and inventory health</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-3 col-md-6">
+            <div class="metric-card">
+                <div class="card-body metric-primary">
+                    <div class="metric-icon"><i class="fas fa-pills"></i></div>
+                    <div class="metric-value" th:text="${totalMedicines}">0</div>
+                    <div class="metric-label">Total Medicines</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="metric-card">
+                <div class="card-body metric-warning">
+                    <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="metric-value" th:text="${lowStockCount}">0</div>
+                    <div class="metric-label">Low Stock Items</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="metric-card">
+                <div class="card-body metric-info">
+                    <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                    <div class="metric-value" th:text="${expiringCount}">0</div>
+                    <div class="metric-label">Expiring Soon</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="metric-card">
+                <div class="card-body metric-danger">
+                    <div class="metric-icon"><i class="fas fa-skull-crossbones"></i></div>
+                    <div class="metric-value" th:text="${expiredCount}">0</div>
+                    <div class="metric-label">Expired Items</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Alert -->
+    <div class="alert-section alert-low" th:if="${!lowStockItems.empty}">
+        <div class="alert-header"><i class="fas fa-exclamation-triangle"></i>
+            <div><h4>Low Stock Alert</h4><p>These medicines need restocking soon</p></div>
+        </div>
+        <div class="alert-content">
+            <div class="modern-table">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${lowStockItems}">
+                        <td><strong th:text="${m.name}">Paracetamol</strong></td>
+                        <td><span class="status-badge"><i class="fas fa-arrow-down"></i> <span th:text="${m.quantity}">5</span></span></td>
+                        <td th:text="${m.lowStockThreshold} ?: '—'">10</td>
+                        <td><a th:href="@{'/medicines/edit/' + ${m.id}}" class="btn btn-outline-primary btn-modern"><i class="fas fa-plus me-1"></i>Restock</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expiring Soon Alert -->
+    <div class="alert-section alert-expiring" th:if="${!expiringSoon.empty}">
+        <div class="alert-header"><i class="fas fa-clock"></i>
+            <div><h4>Expiring Soon</h4><p>These medicines expire within 30 days</p></div>
+        </div>
+        <div class="alert-content">
+            <div class="modern-table">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Expiry Date</th>
+                        <th>Days Remaining</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${expiringSoon}">
+                        <td><strong th:text="${m.name}">Amoxicillin</strong></td>
+                        <td th:text="${#temporals.format(m.expiryDate, 'dd MMM yyyy')}">15 Oct 2025</td>
+                        <td><span class="status-badge"><i class="fas fa-calendar-alt"></i> <span th:text="${m.daysUntilExpiry}">28</span> days</span></td>
+                        <td><a th:href="@{'/medicines/edit/' + ${m.id}}" class="btn btn-outline-warning btn-modern"><i class="fas fa-sync me-1"></i>Replace</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expired Items Alert -->
+    <div class="alert-section alert-expired" th:if="${!expiredItems.empty}">
+        <div class="alert-header"><i class="fas fa-skull-crossbones"></i>
+            <div><h4>Expired Medicines</h4><p>These medicines have expired and should be disposed of</p></div>
+        </div>
+        <div class="alert-content">
+            <div class="modern-table">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Expiry Date</th>
+                        <th>Days Expired</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${expiredItems}">
+                        <td><strong th:text="${m.name}">Vitamin C</strong></td>
+                        <td th:text="${#temporals.format(m.expiryDate, 'dd MMM yyyy')}">10 Sep 2025</td>
+                        <td><span class="status-badge"><i class="fas fa-times-circle"></i> <span th:text="${m.daysExpired}">17</span> days ago</span></td>
+                        <td><a th:href="@{'/medicines/delete/' + ${m.id}}" class="btn btn-outline-danger btn-modern" onclick="return confirm('Dispose of expired medicine?')"><i class="fas fa-trash me-1"></i>Dispose</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Alerts -->
+    <div th:if="${lowStockItems.empty && expiringSoon.empty && expiredItems.empty}" class="no-alerts">
+        <i class="fas fa-check-circle no-alerts-icon"></i>
+        <h4>All inventory is in excellent condition!</h4>
+        <p>No low stock, expiring, or expired items detected. Your inventory management is on track.</p>
+    </div>
+
+    <div class="pb-4"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

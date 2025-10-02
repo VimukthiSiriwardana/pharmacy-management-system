@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Medicine</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --warning-color: #d97706;
+            --success-color: #059669;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .main-container {
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--warning-color), #f59e0b);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            border: none;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--warning-color), var(--success-color));
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            border: none;
+            box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .required {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .form-help {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.375rem;
+            font-style: italic;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 2rem 0;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb-item a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border: 2px solid #3b82f6;
+            color: #1e40af;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+        }
+
+        .medicine-id {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            z-index: 10;
+        }
+
+        .icon-input .form-control {
+            padding-left: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                justify-content: stretch;
+            }
+
+            .action-buttons .btn {
+                flex: 1;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card header-card">
+                    <div class="card-body py-4">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/medicines}">
+                                        <i class="fas fa-pills me-1"></i>Medicines
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Edit Medicine</li>
+                            </ol>
+                        </nav>
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="mb-2 display-6">
+                                    <i class="fas fa-edit me-3"></i>
+                                    Edit Medicine
+                                </h1>
+                                <p class="mb-0 opacity-90 fs-5">
+                                    Update medicine information
+                                    <span class="medicine-id" th:text="'ID: ' + ${medicine.id}">ID: #123</span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <i class="fas fa-clipboard-list fa-4x opacity-25"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center mb-4">
+                    <i class="fas fa-info-circle me-3 fs-4"></i>
+                    <div>
+                        <strong>Editing existing medicine:</strong> Please verify all information carefully before saving changes. This action will update the medicine record in your inventory.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card form-card">
+                    <div class="card-body p-0">
+                        <form th:action="@{/medicines/update}" th:object="${medicine}" method="post">
+
+                            <!-- Hidden ID for updating -->
+                            <input type="hidden" th:field="*{id}"/>
+
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    Basic Information
+                                </h4>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">
+                                            Medicine Name <span class="required">*</span>
+                                        </label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-pills"></i>
+                                            <input type="text" th:field="*{name}" class="form-control"
+                                                   placeholder="Enter medicine name" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">Category</label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-folder"></i>
+                                            <input type="text" th:field="*{category}" class="form-control"
+                                                   placeholder="e.g., Antibiotics, Pain Relief"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea th:field="*{description}" class="form-control" rows="3"
+                                              placeholder="Brief description of the medicine and its uses"
+                                              style="resize: vertical;"></textarea>
+                                    <div class="form-help">Optional: Provide a brief description of the medicine</div>
+                                </div>
+                            </div>
+
+                            <!-- Pricing & Stock -->
+                            <div class="form-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    Pricing & Stock Management
+                                </h4>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">
+                                            Price (Rs.) <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-rupee-sign"></i>
+                                            </span>
+                                            <input type="number" step="0.01" th:field="*{price}"
+                                                   class="form-control" placeholder="0.00" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">
+                                            Quantity <span class="required">*</span>
+                                        </label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-boxes"></i>
+                                            <input type="number" th:field="*{quantity}" class="form-control"
+                                                   placeholder="0" required min="0"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">Low Stock Threshold</label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <input type="number" th:field="*{lowStockThreshold}"
+                                                   class="form-control" placeholder="10" min="0"/>
+                                        </div>
+                                        <div class="form-help">Alert when stock falls below this amount</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Details -->
+                            <div class="form-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    Additional Details
+                                </h4>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">Manufacturer</label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-industry"></i>
+                                            <input type="text" th:field="*{manufacturer}" class="form-control"
+                                                   placeholder="Manufacturer name"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">Expiry Date</label>
+                                        <div class="icon-input">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <input type="date" th:field="*{expiryDate}" class="form-control"/>
+                                        </div>
+                                        <div class="form-help">Leave empty if not applicable</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>
+                                    Update Medicine
+                                </button>
+                                <a th:href="@{/medicines}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Back to List
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            control.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc2626';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#059669';
+                }
+            });
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    });
+</script>
+</body>
+</html>

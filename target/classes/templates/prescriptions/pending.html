@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Prescriptions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success-color: #059669;
+            --success-light: #d1fae5;
+            --danger-color: #dc2626;
+            --danger-light: #fef2f2;
+            --warning-color: #d97706;
+            --warning-light: #fef3c7;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-section {
+            padding: 3rem 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-600);
+        }
+
+        .empty-state-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+
+        .empty-state-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .empty-state h4 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+        }
+
+        .prescription-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .prescription-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .table-modern {
+            margin: 0;
+            border: none;
+        }
+
+        .table-modern thead th {
+            background: var(--gray-50);
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--gray-800);
+            padding: 1.5rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-modern tbody td {
+            border: none;
+            padding: 1.5rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-modern tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .customer-info {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 1rem;
+        }
+
+        .file-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid var(--gray-200);
+        }
+
+        .file-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .file-link i {
+            margin-right: 0.5rem;
+        }
+
+        .upload-time {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-modern {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: linear-gradient(135deg, #047857 0%, var(--success-color) 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.4);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #ef4444 100%);
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, var(--danger-color) 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.4);
+        }
+
+        .modal-modern .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .modal-modern .modal-header {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #ef4444 100%);
+            color: white;
+            border: none;
+            padding: 2rem;
+        }
+
+        .modal-modern .modal-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .modal-modern .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+
+        .modal-modern .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-modern .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-modern .modal-footer {
+            background: var(--gray-50);
+            border: none;
+            padding: 1.5rem 2rem;
+        }
+
+        .form-control-modern {
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
+        }
+
+        .form-label-modern {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .header-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .table-modern thead th,
+            .table-modern tbody td {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-modern {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="main-container">
+        <div class="header-section">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-file-medical me-3" style="font-size: 2.5rem;"></i>
+                <div>
+                    <h1 class="header-title">Pending Prescriptions</h1>
+                    <p class="header-subtitle">Review and manage prescription submissions</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div th:if="${prescriptions.empty}" class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4>All Caught Up!</h4>
+                <p>No pending prescriptions require your attention at this time.</p>
+            </div>
+
+            <div th:unless="${prescriptions.empty}">
+                <div class="prescription-card">
+                    <table class="table table-modern">
+                        <thead>
+                        <tr>
+                            <th>Customer Information</th>
+                            <th>Prescription File</th>
+                            <th>Submission Time</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="p : ${prescriptions}">
+                            <td>
+                                <div class="customer-info" th:text="${p.customer.firstName + ' ' + p.customer.lastName}">John Doe</div>
+                            </td>
+                            <td>
+                                <a th:href="@{${p.filePath}}" target="_blank" class="file-link">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span th:text="${p.fileName}">prescription.pdf</span>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="upload-time" th:text="${#temporals.format(p.uploadedAt, 'dd MMM yyyy HH:mm')}">20 Sep 2025</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form th:action="@{'/prescriptions/approve/' + ${p.id}}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-modern btn-approve"
+                                                onclick="return confirm('Approve this prescription?')">
+                                            <i class="fas fa-check"></i>Approve
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-modern btn-reject" data-bs-toggle="modal"
+                                            data-bs-target="#rejectModal"
+                                            th:data-id="${p.id}">
+                                        <i class="fas fa-times"></i>Reject
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade modal-modern" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Reject Prescription
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="rejectForm" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label form-label-modern">Rejection Reason</label>
+                        <textarea name="reason" class="form-control form-control-modern" rows="4"
+                                  placeholder="Please provide a detailed reason for rejecting this prescription..."
+                                  required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-modern" data-bs-dismiss="modal">
+                        <i class="fas fa-arrow-left me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-modern btn-reject">
+                        <i class="fas fa-ban me-1"></i>Reject Prescription
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Set form action when modal opens
+    document.getElementById('rejectModal').addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const prescriptionId = button.getAttribute('data-id');
+        const form = document.getElementById('rejectForm');
+        form.action = '/prescriptions/reject/' + prescriptionId;
+    });
+</script>
+</body>
+</html>
