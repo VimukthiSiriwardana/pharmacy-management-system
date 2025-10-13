@@ -16,14 +16,12 @@ public class AdminOrderController {
         this.orderService = orderService;
     }
 
-    // ✅ View all pending orders
     @GetMapping("/pending")
     public String pendingOrders(Model model) {
         model.addAttribute("orders", orderService.getPendingOrders());
         return "admin/orders/pending";  // points to src/main/resources/templates/admin/orders/pending.html
     }
 
-    // ✅ Approve order (POST request with CSRF token in form)
     @PostMapping("/approve/{orderId}")
     public String approveOrder(@PathVariable Long orderId) {
         try {
@@ -34,7 +32,6 @@ public class AdminOrderController {
         }
     }
 
-    // ✅ Mark order as paid (POST request with CSRF token in form)
     @PostMapping("/mark-paid/{orderId}")
     public String markAsPaid(@PathVariable Long orderId) {
         try {

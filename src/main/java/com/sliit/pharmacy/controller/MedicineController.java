@@ -5,6 +5,8 @@ import com.sliit.pharmacy.model.Medicine;
 import com.sliit.pharmacy.service.MedicineService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +36,12 @@ public class MedicineController {
     }
 
     @PostMapping("/add")
-    public String saveMedicine(@ModelAttribute Medicine medicine) {
+    public String saveMedicine(@Valid @ModelAttribute("medicine") Medicine medicine,
+                               BindingResult result,
+                               Model model) {
+        if (result.hasErrors()) {
+            return "medicines/add"; // Return form with error messages
+        }
         medicineService.saveMedicine(medicine);
         return "redirect:/medicines";
     }
@@ -50,7 +57,11 @@ public class MedicineController {
     }
 
     @PostMapping("/update")
-    public String updateMedicine(@ModelAttribute Medicine medicine) {
+    public String updateMedicine(@Valid @ModelAttribute("medicine") Medicine medicine,
+                                 BindingResult result) {
+        if (result.hasErrors()) {
+            return "medicines/edit"; // Return form with errors
+        }
         medicineService.saveMedicine(medicine);
         return "redirect:/medicines";
     }
@@ -70,7 +81,7 @@ public class MedicineController {
         return "medicines/list";
     }
 
-    // Helper to compute stats
+    // Helper method to compute stats
     private void addStatsToModel(Model model, List<Medicine> medicines) {
         long total = medicines.size();
         long lowStock = medicines.stream()

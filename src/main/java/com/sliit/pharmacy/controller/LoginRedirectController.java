@@ -11,7 +11,6 @@ public class LoginRedirectController {
 
     @GetMapping("/default")
     public String redirectAfterLogin(Authentication authentication) {
-        // ✅ CORRECT: Check for ROLE_CUSTOMER (not ROLE_ROLE_CUSTOMER)
         boolean isCustomer = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"));
 

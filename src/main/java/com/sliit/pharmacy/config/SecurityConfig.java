@@ -40,7 +40,7 @@ public class SecurityConfig {
                         // Admin/Pharmacist/Manager pages (must come BEFORE general /orders/** rule)
                         .requestMatchers(
                                 "/dashboard",
-                                "/inventory/**",       // Inventory access
+                                "/inventory/**",
                                 "/medicines/**",
                                 "/prescriptions/pending",
                                 "/prescriptions/approve/**",

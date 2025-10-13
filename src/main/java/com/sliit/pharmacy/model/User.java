@@ -8,6 +8,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 public class User {
+
+    // ====== Enums ======
+    public enum UserRole {
+        CUSTOMER, PHARMACIST, MANAGER, ADMIN, DELIVERY_STAFF
+    }
+
+    public enum DiscountType {
+        REGULAR, SENIOR, LOYALTY
+    }
+
+    // ====== Fields ======
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,14 +43,21 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    // ✅ New Field: Discount Type
+    @Enumerated(EnumType.STRING)
+    @Column(name = "discount_type")
+    private DiscountType discountType = DiscountType.REGULAR;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean enabled;
 
+    // ====== Constructors ======
     public User() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.enabled = true;
+        this.discountType = DiscountType.REGULAR; // default
     }
 
     public User(String firstName, String lastName, String email, String password, UserRole role) {
@@ -51,7 +69,7 @@ public class User {
         this.role = role;
     }
 
-    // Getters and setters
+    // ====== Getters and Setters ======
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -76,6 +94,9 @@ public class User {
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
 
+    public DiscountType getDiscountType() { return discountType; }
+    public void setDiscountType(DiscountType discountType) { this.discountType = discountType; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
@@ -84,9 +105,4 @@ public class User {
 
     public boolean isEnabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
-    // Enum for roles
-    public enum UserRole {
-        CUSTOMER, PHARMACIST, MANAGER, ADMIN, DELIVERY_STAFF
-    }
 }

@@ -1,4 +1,6 @@
 package com.sliit.pharmacy.strategy;
 
-public class DiscountStrategy {
+public interface DiscountStrategy {
+    double applyDiscount(double totalAmount);
+    String getDiscountType();
 }

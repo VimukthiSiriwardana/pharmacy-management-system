@@ -18,6 +18,7 @@ public class ProfileController {
         this.userService = userService;
     }
 
+    // View user profile
     @GetMapping("/profile")
     public String viewProfile(Authentication authentication, Model model) {
         String email = authentication.getName();
@@ -26,6 +27,7 @@ public class ProfileController {
         return "profile/view";
     }
 
+    // Edit profile form
     @GetMapping("/profile/edit")
     public String editProfileForm(Authentication authentication, Model model) {
         String email = authentication.getName();
@@ -34,17 +36,24 @@ public class ProfileController {
         return "profile/edit";
     }
 
+    // Update profile
     @PostMapping("/profile/update")
     public String updateProfile(User updatedUser, Authentication authentication) {
         String email = authentication.getName();
         User currentUser = userService.findUserByEmail(email);
 
+        // Update basic details
         currentUser.setFirstName(updatedUser.getFirstName());
         currentUser.setLastName(updatedUser.getLastName());
         currentUser.setPhoneNumber(updatedUser.getPhoneNumber());
         currentUser.setAddress(updatedUser.getAddress());
 
+        // ✅ Update discount type
+        currentUser.setDiscountType(updatedUser.getDiscountType());
+
+        // Save changes
         userService.saveUser(currentUser);
+
         return "redirect:/profile?updated";
     }
 }

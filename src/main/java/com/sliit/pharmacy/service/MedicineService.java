@@ -15,7 +15,6 @@ public class MedicineService {
         this.medicineRepository = medicineRepository;
     }
 
-    // ✅ This fixes the StoreController error
     public List<Medicine> getAllMedicines() {
         return medicineRepository.findAll();
     }

@@ -25,12 +25,16 @@ public class Order {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
+    // NEW: Store discounted total for Option 2
+    @Column(precision = 10, scale = 2)
+    private BigDecimal discountedTotal;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(nullable = false)
-    private boolean approved = false; // ✅ NEW FIELD
+    private boolean approved = false;
 
     private LocalDateTime createdAt;
     private LocalDateTime paidAt;
@@ -52,11 +56,14 @@ public class Order {
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
 
+    public BigDecimal getDiscountedTotal() { return discountedTotal; }
+    public void setDiscountedTotal(BigDecimal discountedTotal) { this.discountedTotal = discountedTotal; }
+
     public OrderStatus getStatus() { return status; }
     public void setStatus(OrderStatus status) { this.status = status; }
 
-    public boolean isApproved() { return approved; } // ✅ NEW
-    public void setApproved(boolean approved) { this.approved = approved; } // ✅ NEW
+    public boolean isApproved() { return approved; }
+    public void setApproved(boolean approved) { this.approved = approved; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

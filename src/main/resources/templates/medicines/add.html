@@ -65,6 +65,7 @@
         .back-link:hover { color: var(--primary-color); border-color: var(--primary-color); background-color: #f8fafc; transform: translateY(-1px); text-decoration: none; }
         .stats-preview { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; text-align: center; }
         .preview-badge { display: inline-block; padding: 0.375rem 0.75rem; border-radius: 20px; font-weight: 500; font-size: 0.875rem; background-color: rgba(255,255,255,0.2); color: white; margin: 0.25rem; }
+        .error-message { color: var(--danger-color); font-size: 0.85rem; margin-top: 0.25rem; }
         @media (max-width: 768px) {
             body { padding: 1rem 0; }
             .form-section { padding: 1.5rem; }
@@ -103,49 +104,74 @@
                 <div class="form-section">
                     <h3 class="section-title"><i class="fas fa-info-circle"></i>Medicine Information</h3>
                     <form th:action="@{/medicines/add}" th:object="${medicine}" method="post" id="medicine-form">
+                        <!-- Name -->
                         <div class="form-group">
                             <label for="name"><i class="fas fa-pills"></i>Medicine Name <span class="required">*</span></label>
-                            <input type="text" id="name" th:field="*{name}" placeholder="Enter medicine name" required>
+                            <input type="text" id="name" th:field="*{name}" placeholder="Enter medicine name">
+                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></div>
                             <div class="form-text">Enter the brand or generic name of the medicine</div>
                         </div>
+
+                        <!-- Description -->
                         <div class="form-group">
                             <label for="description"><i class="fas fa-sticky-note"></i>Description</label>
                             <input type="text" id="description" th:field="*{description}" placeholder="Brief description (optional)">
+                            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error-message"></div>
                             <div class="form-text">e.g., Used for pain relief, fever reduction</div>
                         </div>
+
+                        <!-- Price -->
                         <div class="form-group">
                             <label for="price"><i class="fas fa-tag"></i>Price (Rs.) <span class="required">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text">Rs.</span>
-                                <input type="number" id="price" th:field="*{price}" placeholder="Enter price" step="0.01" min="0" required>
+                                <input type="number" id="price" th:field="*{price}" placeholder="Enter price" step="0.01" min="0">
                             </div>
+                            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error-message"></div>
                             <div class="form-text">Set the unit price for this medicine</div>
                         </div>
+
+                        <!-- Quantity -->
                         <div class="form-group">
                             <label for="quantity"><i class="fas fa-cubes"></i>Stock Quantity <span class="required">*</span></label>
-                            <input type="number" id="quantity" th:field="*{quantity}" placeholder="Enter quantity" min="0" required>
+                            <input type="number" id="quantity" th:field="*{quantity}" placeholder="Enter quantity" min="0">
+                            <div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="error-message"></div>
                             <div class="form-text">Enter the current stock quantity</div>
                         </div>
+
+                        <!-- Low Stock Threshold -->
                         <div class="form-group">
                             <label for="lowStockThreshold"><i class="fas fa-exclamation-triangle"></i>Low Stock Threshold</label>
                             <input type="number" id="lowStockThreshold" th:field="*{lowStockThreshold}" placeholder="e.g., 10" min="0">
-                            <div class="form-text">Alert when stock falls below this number (optional)</div>
+                            <div th:if="${#fields.hasErrors('lowStockThreshold')}" th:errors="*{lowStockThreshold}" class="error-message"></div>
+                            <div class="form-text">Alert when stock falls below this number</div>
                         </div>
+
+                        <!-- Category -->
                         <div class="form-group">
                             <label for="category"><i class="fas fa-folder"></i>Category <span class="required">*</span></label>
-                            <input type="text" id="category" th:field="*{category}" placeholder="Enter medicine category" required>
+                            <input type="text" id="category" th:field="*{category}" placeholder="Enter medicine category">
+                            <div th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="error-message"></div>
                             <div class="form-text">e.g., Antibiotics, Pain Relief, Vitamins</div>
                         </div>
+
+                        <!-- Manufacturer -->
                         <div class="form-group">
                             <label for="manufacturer"><i class="fas fa-industry"></i>Manufacturer <span class="required">*</span></label>
-                            <input type="text" id="manufacturer" th:field="*{manufacturer}" placeholder="Enter manufacturer name" required>
+                            <input type="text" id="manufacturer" th:field="*{manufacturer}" placeholder="Enter manufacturer name">
+                            <div th:if="${#fields.hasErrors('manufacturer')}" th:errors="*{manufacturer}" class="error-message"></div>
                             <div class="form-text">Name of the pharmaceutical company</div>
                         </div>
+
+                        <!-- Expiry Date -->
                         <div class="form-group">
                             <label for="expiryDate"><i class="fas fa-calendar-times"></i>Expiry Date <span class="required">*</span></label>
-                            <input type="date" id="expiryDate" th:field="*{expiryDate}" required>
+                            <input type="date" id="expiryDate" th:field="*{expiryDate}">
+                            <div th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}" class="error-message"></div>
                             <div class="form-text">Select the expiry date of this medicine batch</div>
                         </div>
+
+                        <!-- Buttons -->
                         <div class="btn-container">
                             <a th:href="@{/medicines}" class="back-link"><i class="fas fa-arrow-left"></i>Back to Medicine List</a>
                             <button type="submit"><i class="fas fa-save"></i>Save Medicine</button>

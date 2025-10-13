@@ -323,6 +323,16 @@
                     </div>
                 </div>
 
+                <!-- Added Discount Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">Discount Type</label>
+                    <select th:field="*{discountType}" class="form-control">
+                        <option value="REGULAR">Regular</option>
+                        <option value="SENIOR">Senior</option>
+                        <option value="LOYALTY">Loyalty</option>
+                    </select>
+                </div>
+
                 <div class="button-group">
                     <button type="submit" class="btn-update">
                         <i class="fas fa-save me-2"></i>Update Profile
