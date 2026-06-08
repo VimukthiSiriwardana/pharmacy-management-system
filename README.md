@@ -1,129 +1,293 @@
-# 💊 Pharmacy Medicine Management System
+# 💊 Web-Based Pharmacy Management System
 
 <p align="center">
-  <b>A smart, real-time pharmacy inventory management system</b><br>
-  Built with <b>Java 17</b> & <b>Spring Boot 3</b><br>
-  Featuring <b>automatic low-stock and expiry alerts</b> using the <b>Observer Design Pattern</b>
+  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java" />
+  <img src="https://img.shields.io/badge/Spring_Boot-3-success?style=for-the-badge&logo=springboot" />
+  <img src="https://img.shields.io/badge/Database-SQL_Server-blue?style=for-the-badge&logo=microsoftsqlserver" />
+  <img src="https://img.shields.io/badge/Architecture-MVC-important?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Design_Pattern-Observer-yellow?style=for-the-badge" />
 </p>
 
 <p align="center">
-  <i>“Never let a medicine expire or run out of stock again.”</i>
-</p>
-
-<p align="center">
-  📌 <a href="https://github.com/VimukthiSiriwardana/pharmacy-management-system">GitHub Repository</a>
+  <b>A modern pharmacy management solution built with Java & Spring Boot</b><br>
+  Designed to automate medicine inventory, prescription handling, customer management, and pharmacy operations efficiently.
 </p>
 
 ---
 
-## 🧠 Project Overview
+# 📌 Project Overview
 
-Managing pharmacy inventory manually often results in **expired medicines, stock shortages, and financial losses**.  
-This system automates inventory monitoring and alert generation to ensure **efficiency, accuracy, and reliability**.
+The **Web-Based Pharmacy Management System** is a full-stack enterprise-style web application developed as a **Software Engineering group project** by a 6-member team.
 
-### 🔹 The system enables:
-- 📦 **Real-time stock level tracking**
-- ⏱️ **Automatic expiry monitoring**
-- 🚨 **Instant alerts using a decoupled Observer Pattern**
-- 🖥️ **Clean and professional dashboard for pharmacists**
+The system was designed to improve pharmacy operations by automating:
 
-The project follows **industry-standard layered architecture** and adheres to **SOLID principles**, ensuring scalability and maintainability.
+* Medicine inventory management
+* Stock monitoring
+* Expiry tracking
+* Prescription handling
+* Customer management
+* Order processing
+* Inventory alerts
 
----
+The application follows:
 
-## ✨ Key Features
-
-### 🔹 Intelligent Inventory Tracking
-- Automatic **medicine status classification**
-  - ✅ **In Stock** → Quantity > Reorder Threshold
-  - ⚠️ **Low Stock** → 0 < Quantity ≤ Reorder Threshold
-  - ❌ **Out of Stock** → Quantity = 0
-- ⏱️ **Expiry monitoring**
-  - Medicines expiring within **30 days** are flagged automatically
+* ✅ MVC Architecture
+* ✅ 3-Tier Layered Architecture
+* ✅ SOLID Principles
+* ✅ Object-Oriented Programming Concepts
+* ✅ Design Patterns for scalability and maintainability
 
 ---
 
-### 🚨 Real-Time Alerts (Observer Pattern)
-- Inventory updates automatically trigger alerts
-- Alert logic is **fully decoupled** from business services
-- No hard-coded conditional checks
-- Alerts displayed in:
-  - 📊 Inventory Dashboard
-  - 🔔 Dedicated Alerts Page
+# 🚀 Key Features
+
+## 🔹 Medicine Management
+
+* Add, update, delete, and search medicines
+* Real-time stock quantity management
+* Medicine category management
+* Manufacturer and expiry tracking
+* Low-stock threshold monitoring
+
+## 🔹 Intelligent Inventory Monitoring
+
+* Automatic low-stock detection
+* Out-of-stock identification
+* Expired medicine tracking
+* Expiring-soon medicine alerts
+
+## 🔹 Observer Design Pattern Alerts
+
+* Real-time inventory notifications
+* Decoupled alert management system
+* Automatic alert triggering when stock changes
+
+## 🔹 User & Customer Management
+
+* Secure user authentication
+* Role-based authorization using Spring Security
+* Customer registration and profile management
+
+## 🔹 Prescription Handling
+
+* Prescription upload functionality
+* Prescription review and approval workflow
+
+## 🔹 Sales & Billing
+
+* Order management system
+* Dynamic discount calculation using Strategy Pattern
+* Invoice generation
+
+## 🔹 Responsive User Interface
+
+* Modern dashboard design
+* Responsive layout using Bootstrap 5
+* Status badges and dashboard analytics
+* User-friendly pharmacist/admin interface
 
 ---
 
-### 🛠️ CRUD & Inventory Operations
-- ➕ Add new medicines
-- ✏️ Update medicine details
-- 🗑️ Delete medicines
-- 🔍 Search and filter inventory
-- 🔄 Automatic stock deduction during sales
-- ✔️ Form validation for data accuracy
+# 🏗️ System Architecture
+
+The project follows a **3-Tier Layered MVC Architecture**.
+
+```text
+Presentation Layer
+│
+├── Thymeleaf Templates
+├── HTML/CSS/Bootstrap
+│
+Business Logic Layer
+│
+├── Controllers
+├── Services
+├── Design Patterns
+│     ├── Observer Pattern
+│     └── Strategy Pattern
+│
+Data Access Layer
+│
+├── Spring Data JPA
+├── Hibernate ORM
+└── Microsoft SQL Server
+```
 
 ---
 
-### 🎨 Professional User Interface
-- 🌙 Dark-themed, modern dashboard
-- 🏷️ Status badges for quick visibility
-- 📱 Responsive design (desktop & tablet)
-- Built using **Thymeleaf + Bootstrap 5**
+# 🧠 Design Patterns Used
+
+## 🔔 Observer Design Pattern
+
+Used for automatic inventory alert generation.
+
+### Purpose
+
+Notify alert systems automatically whenever medicine inventory changes.
+
+### Implementation
+
+* `MedicineService` → Subject
+* Alert classes → Observers
+
+### Features
+
+* Low-stock alerts
+* Expiry alerts
+* Decoupled architecture
+* Easier scalability
 
 ---
 
-## 🏗️ System Architecture
+## 🎯 Strategy Design Pattern
 
-The system follows a **layered architecture** combined with the **Observer Pattern**:
+Used for dynamic discount calculation during billing.
 
+### Supported Discount Strategies
 
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technology |
-|------|------------|
-| Language | Java 17 |
-| Framework | Spring Boot 3 |
-| ORM | Hibernate |
-| Persistence | Spring Data JPA |
-| Database | Microsoft SQL Server |
-| Frontend | Thymeleaf, Bootstrap 5 |
-| Icons | Font Awesome |
-| Build Tool | Maven |
-| IDE | IntelliJ IDEA |
+* Senior citizen discounts
+* Loyalty customer discounts
+* Standard pricing
 
 ---
 
-## 🧠 Design Pattern Used: Observer Pattern
+# 🛠️ Technology Stack
 
-The **Observer Design Pattern** is used to notify multiple alert mechanisms whenever the medicine inventory changes.
-
-### 🎯 Problem Statement
-> How can multiple alert systems respond to inventory changes **without tightly coupling** them to the business logic?
-
-### ✅ Solution
-- `MedicineService` acts as the **Subject**
-- Alert classes act as **Observers**
-- Observers subscribe to inventory changes and react independently
-
----
-
-### 🔄 Workflow
-1. `MedicineService` updates medicine data  
-2. Observers are notified automatically  
-3. Each observer checks its own condition  
-4. Alerts are triggered without modifying core logic  
+| Category             | Technology           |
+| -------------------- | -------------------- |
+| Programming Language | Java 17              |
+| Backend Framework    | Spring Boot 3        |
+| Security             | Spring Security      |
+| ORM Framework        | Hibernate            |
+| Persistence Layer    | Spring Data JPA      |
+| Frontend             | Thymeleaf            |
+| UI Framework         | Bootstrap 5          |
+| Database             | Microsoft SQL Server |
+| Build Tool           | Maven                |
+| IDE                  | IntelliJ IDEA        |
+| Version Control      | Git & GitHub         |
 
 ---
 
-### 🔧 Example Code
+# 📂 Project Structure
 
-```java
-public void updateStock(Long id, int newQuantity) {
-    Medicine medicine = getMedicineById(id);
-    medicine.setQuantity(newQuantity);
-    medicineRepository.save(medicine);
-    notifyObservers(medicine); // 🔔 Alerts triggered automatically
-}
+```text
+src/main/java/
+│
+├── controller/
+├── service/
+├── repository/
+├── model/
+├── config/
+├── observer/
+├── strategy/
+└── security/
 
+src/main/resources/
+│
+├── templates/
+├── static/
+└── application.properties
+```
 
+---
+
+# 👨‍💻 My Contribution
+
+### 👤 Vimukthi Siriwardana (Me)
+
+Responsible for the **Medicine Management Module**.
+
+### Contributions:
+
+* Developed Medicine CRUD operations
+* Implemented inventory stock monitoring
+* Designed medicine dashboard analytics
+* Built low-stock and expiry alert functionality
+* Implemented Observer Design Pattern for inventory notifications
+* Developed medicine add/edit forms
+* Integrated real-time inventory status monitoring
+
+---
+
+# 📸 System Screenshots
+
+> Add screenshots here:
+
+* Home Page
+<img width="1919" height="1016" alt="image" src="https://github.com/user-attachments/assets/52e34f59-3329-4181-9f0d-da4af9ecf893" />
+
+* Medicine Dashboard
+<img width="1919" height="1019" alt="image" src="https://github.com/user-attachments/assets/acecbb5d-38c1-4b73-a147-b1fc5d6b5f81" />
+
+* Inventory Alerts Page
+<img width="1919" height="1018" alt="image" src="https://github.com/user-attachments/assets/c4f59d0c-28a6-44fc-8949-d288780345e6" />
+<img width="1919" height="1019" alt="image" src="https://github.com/user-attachments/assets/7a8c8cce-ba5a-4796-b73a-c26836e7b582" />
+
+* Medicine Add/Edit Forms
+<img width="1919" height="1019" alt="image" src="https://github.com/user-attachments/assets/487cdd8d-4e86-4c05-a8ab-68c29e0f50e0" />
+<img width="1919" height="1022" alt="image" src="https://github.com/user-attachments/assets/fae8df55-fa32-4cbe-bc44-4d172cf168e8" />
+
+* Customer Dashboard
+<img width="1919" height="1020" alt="image" src="https://github.com/user-attachments/assets/a941e8e3-0f4e-4ea8-865f-3769bd2caec4" />
+<img width="1919" height="1018" alt="image" src="https://github.com/user-attachments/assets/f29a9977-73be-4a06-a5fb-0d404739eb21" />
+
+* Prescription Upload UI
+<img width="1919" height="1020" alt="image" src="https://github.com/user-attachments/assets/da9b1543-3771-47d0-8e29-be114cdcd2b6" />
+
+---
+
+# ⚙️ Installation & Setup
+
+## Prerequisites
+
+* Java 17
+* Maven
+* SQL Server
+* IntelliJ IDEA
+
+## Clone Repository
+
+```bash
+git clone https://github.com/your-username/pharmacy-management-system.git
+```
+
+## Configure Database
+
+Update `application.properties`:
+
+```properties
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=pharmacy_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+```
+
+## Run Application
+
+```bash
+mvn spring-boot:run
+```
+---
+
+# 👥 Team Members
+
+* IT24103506 – Vimukthi Siriwardana (Me)
+* IT24103558 – Jayawickum H.W.M.
+* IT24103519 – Kalubowila G.N.
+* IT24102613 – Amarasinghe A.B.E
+* IT24103609 – Thanusikan. M
+* IT24103553 – Jayarathne K.P.S.U
+
+---
+
+# 📚 Academic Information
+
+* Module: Software Engineering
+* Institution: Sri Lanka Institute of Information Technology (SLIIT)
+* Academic Year: Year 2 Semester 1
+
+---
+
+# ⭐ Repository
+
+If you found this project helpful, consider giving it a star ⭐
